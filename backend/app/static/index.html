@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>실패작 노트</title>
+<link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+<div id="app">
+
+  <div id="authView">
+    <img src="/static/mascot.png" alt="마스코트" class="mascot mascot-splash" />
+    <h1>실패작 노트</h1>
+    <div class="subtitle">오늘의 실패 한 장을 적어보세요.</div>
+    <div class="card">
+      <label>이메일</label>
+      <input id="authEmail" type="email" placeholder="you@example.com" />
+      <label>비밀번호</label>
+      <input id="authPassword" type="password" placeholder="6자 이상" />
+      <div id="authError" class="error hidden"></div>
+      <div class="row">
+        <button id="loginBtn">로그인</button>
+        <button id="signupBtn" class="secondary">회원가입</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="mainView" class="hidden">
+    <div class="header-row">
+      <img src="/static/mascot.png" alt="마스코트" class="mascot mascot-avatar" />
+      <div>
+        <h1>실패작 노트</h1>
+        <div class="subtitle">오늘 <span id="todayCount" class="count-badge">0/5</span></div>
+      </div>
+      <span class="logout-link right" id="logoutBtn">로그아웃</span>
+    </div>
+
+    <div class="card">
+      <label>제목 (선택)</label>
+      <input id="entryTitle" type="text" placeholder="오늘의 실패 제목" />
+      <label>오늘의 실패</label>
+      <textarea id="entryContent" rows="5" placeholder="무슨 일이 있었나요?"></textarea>
+      <label style="display:flex;align-items:center;gap:6px;">
+        <input type="checkbox" id="emotionTag" style="width:auto;margin:0;" />
+        감정 노트로 보내기
+      </label>
+      <div id="entryError" class="error hidden"></div>
+      <button id="submitEntryBtn">저장하기</button>
+    </div>
+
+    <div class="card">
+      <h2 style="font-size:15px;margin:0 0 10px;">최근 기록</h2>
+      <div id="entryList"></div>
+    </div>
+  </div>
+
+</div>
+
+<div id="crisisModal" class="hidden">
+  <div class="box">
+    <div>혼자 견디기 힘든 마음이 느껴져요.</div>
+    <div class="phone">109</div>
+    <div>자살예방상담전화에 연결하면 도움을 받을 수 있어요.</div>
+    <button id="crisisCloseBtn" style="margin-top:16px;">닫기</button>
+  </div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

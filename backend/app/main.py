@@ -1,9 +1,14 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from playwright.async_api import async_playwright
 
 from app.routers import account, entries, exports, notebooks, stats
+
+STATIC_DIR = Path(__file__).parent / "static"
 
 
 @asynccontextmanager
@@ -27,7 +32,14 @@ app.include_router(exports.router)
 app.include_router(stats.router)
 app.include_router(account.router)
 
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
 
 @app.get("/health")
 async def health_check() -> dict:
     return {"status": "ok"}
+
+
+@app.get("/")
+async def index() -> FileResponse:
+    return FileResponse(STATIC_DIR / "index.html")
