@@ -543,47 +543,20 @@ function setupMascotWhisper(el) {
 setupMascotWhisper(document.getElementById("mascotAvatar"));
 setupMascotWhisper(document.getElementById("mascotSplash"));
 
-const KONAMI_SEQUENCE = [
-  "ArrowUp",
-  "ArrowUp",
-  "ArrowDown",
-  "ArrowDown",
-  "ArrowLeft",
-  "ArrowRight",
-  "ArrowLeft",
-  "ArrowRight",
-  "b",
-  "a",
-];
-let konamiProgress = 0;
-
-document.addEventListener("keydown", (e) => {
-  const expected = KONAMI_SEQUENCE[konamiProgress];
-  if (e.key === expected || e.key.toLowerCase() === expected) {
-    konamiProgress += 1;
-    if (konamiProgress === KONAMI_SEQUENCE.length) {
-      konamiProgress = 0;
-      showKonamiEasterEgg();
-    }
-  } else {
-    konamiProgress = e.key === KONAMI_SEQUENCE[0] ? 1 : 0;
-  }
-});
-
-function showKonamiEasterEgg() {
+function showEasterOverlay({ icon, title, body, emojis }) {
   const overlay = document.createElement("div");
   overlay.className = "konami-overlay";
   overlay.innerHTML = `
     <div class="box">
-      <div style="font-size:32px;margin-bottom:10px;">✨</div>
-      <div style="font-weight:700;margin-bottom:6px;">숨겨진 위로를 찾았어요</div>
-      <div style="font-size:13px;color:var(--muted);">오늘 하루도, 실패해도 괜찮았어요.<br />당신은 이미 충분히 애쓰고 있어요.</div>
+      <div style="font-size:32px;margin-bottom:10px;">${icon}</div>
+      <div style="font-weight:700;margin-bottom:6px;">${title}</div>
+      <div style="font-size:13px;color:var(--muted);">${body}</div>
     </div>
   `;
   for (let i = 0; i < 18; i++) {
     const sparkle = document.createElement("div");
     sparkle.className = "konami-sparkle";
-    sparkle.textContent = ["✨", "💜", "⭐", "🩹"][i % 4];
+    sparkle.textContent = emojis[i % emojis.length];
     sparkle.style.left = `${Math.random() * 100}%`;
     sparkle.style.bottom = "0";
     sparkle.style.animationDelay = `${Math.random() * 1.5}s`;
@@ -593,6 +566,69 @@ function showKonamiEasterEgg() {
   document.body.appendChild(overlay);
   setTimeout(() => overlay.remove(), 6000);
 }
+
+function showKonamiEasterEgg() {
+  showEasterOverlay({
+    icon: "✨",
+    title: "숨겨진 위로를 찾았어요",
+    body: "오늘 하루도, 실패해도 괜찮았어요.<br />당신은 이미 충분히 애쓰고 있어요.",
+    emojis: ["✨", "💜", "⭐", "🩹"],
+  });
+}
+
+function showSadEasterEgg() {
+  showEasterOverlay({
+    icon: "🩹",
+    title: "많이 힘들었죠",
+    body: "지금은 그냥 쉬어가도 돼요.<br />혼자 견디기 힘들면 109, 자살예방상담전화가 곁에 있어요.",
+    emojis: ["💧", "🩹", "🤍", "🫂"],
+  });
+}
+
+function showLoveEasterEgg() {
+  showEasterOverlay({
+    icon: "💜",
+    title: "토닥토닥",
+    body: "오늘 하루도 애쓴 당신, 꼭 안아주고 싶어요.",
+    emojis: ["💜", "🩷", "💞", "✨"],
+  });
+}
+
+function showReverseEasterEgg() {
+  document.body.style.transition = "transform 0.4s ease";
+  document.body.style.transform = "rotate(180deg)";
+  setTimeout(() => {
+    document.body.style.transform = "";
+  }, 1500);
+}
+
+const EASTER_SEQUENCES = [
+  {
+    keys: ["arrowup", "arrowup", "arrowdown", "arrowdown", "arrowleft", "arrowright", "arrowleft", "arrowright", "b", "a"],
+    action: showKonamiEasterEgg,
+  },
+  { keys: ["s", "a", "d"], action: showSadEasterEgg },
+  { keys: ["l", "o", "v", "e"], action: showLoveEasterEgg },
+  {
+    keys: ["arrowdown", "arrowdown", "arrowup", "arrowup", "arrowright", "arrowleft", "arrowright", "arrowleft", "a", "b"],
+    action: showReverseEasterEgg,
+  },
+];
+let easterKeyBuffer = [];
+
+document.addEventListener("keydown", (e) => {
+  easterKeyBuffer.push(e.key.toLowerCase());
+  if (easterKeyBuffer.length > 20) easterKeyBuffer.shift();
+
+  for (const seq of EASTER_SEQUENCES) {
+    const tail = easterKeyBuffer.slice(-seq.keys.length);
+    if (tail.length === seq.keys.length && tail.every((k, i) => k === seq.keys[i])) {
+      easterKeyBuffer = [];
+      seq.action();
+      break;
+    }
+  }
+});
 
 if (getToken()) {
   renderMainView();
