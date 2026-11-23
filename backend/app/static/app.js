@@ -252,10 +252,38 @@ document.getElementById("submitEntryBtn").addEventListener("click", async () => 
     }
     loadToday();
     loadEntries();
+    checkMilestone();
   } catch (e) {
     showError(entryError, e.message);
   }
 });
+
+const MILESTONE_MESSAGES = {
+  1: "🎉 첫 기록을 남겼어요. 여기까지 온 것만으로도 잘한 거예요.",
+  10: "🎉 벌써 10장째예요. 꾸준히 쓰고 있네요.",
+  30: "🎉 30장 달성! 한 달치 실패가 쌓였어요.",
+  50: "🎉 50장이에요. 절반을 향해 가고 있어요.",
+  100: "🎉 100장 돌파! 이 정도면 책 한 권이에요.",
+  155: "🎉 155장, 한 권을 가득 채웠어요. 수고했어요.",
+};
+
+async function checkMilestone() {
+  try {
+    const stats = await api("/stats/overview");
+    const message = MILESTONE_MESSAGES[stats.total_entries];
+    if (message) showMilestoneToast(message);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function showMilestoneToast(message) {
+  const toast = document.createElement("div");
+  toast.className = "milestone-toast";
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3200);
+}
 
 const NOTEBOOK_TYPE_LABEL = { failure: "실패작 노트", emotion: "감정 노트" };
 const NOTEBOOK_STATUS_LABEL = { in_progress: "작성 중", completed: "완결" };
@@ -403,8 +431,8 @@ async function loadExportsView() {
             (ex) => `
         <div class="entry">
           <div class="entry-date">${new Date(ex.created_at).toLocaleString()}</div>
-          <div class="entry-title">${ex.binding_style === "kr" ? "한국식" : "일본식"} 제본 · ${escapeHtml(ex.cover_theme)}</div>
-          <a href="${ex.download_url}" target="_blank" rel="noopener">다운로드</a>
+          <div class="entry-title">📎 ${ex.binding_style === "kr" ? "가로쓰기" : "세로쓰기"} · ${escapeHtml(ex.cover_theme)}</div>
+          <a href="${ex.download_url}" target="_blank" rel="noopener">다운로드해서 스테이플 찍기</a>
         </div>`
           )
           .join("")
@@ -419,7 +447,7 @@ document.getElementById("exportCreateBtn").addEventListener("click", async () =>
   hideError(errorEl);
   const notebookId = document.getElementById("exportNotebookSelect").value;
   if (!notebookId) {
-    showError(errorEl, "출판할 수 있는 완결된 노트북이 없어요.");
+    showError(errorEl, "출력할 수 있는 완결된 노트북이 없어요.");
     return;
   }
   const bindingStyle = document.getElementById("exportBindingSelect").value;
@@ -479,6 +507,92 @@ document.getElementById("dataExportBtn").addEventListener("click", async () => {
     alert(e.message);
   }
 });
+
+const MASCOT_WHISPERS = [
+  "오늘도 수고했어요.",
+  "실패해도 괜찮아요, 다시 쓰면 되니까.",
+  "생각보다 잘하고 있어요.",
+  "가끔은 그냥 울어도 돼요.",
+  "내일은 오늘보다 나을 거예요.",
+  "쓰담쓰담...",
+  "이 노트는 당신 편이에요.",
+];
+
+function setupMascotWhisper(el) {
+  if (!el) return;
+  let clicks = [];
+  el.style.cursor = "pointer";
+  el.addEventListener("click", () => {
+    const now = Date.now();
+    clicks = clicks.filter((t) => now - t < 4000);
+    clicks.push(now);
+    if (clicks.length >= 5) {
+      clicks = [];
+      const wrap = el.closest(".mascot-wrap");
+      if (!wrap) return;
+      wrap.querySelectorAll(".mascot-whisper").forEach((n) => n.remove());
+      const bubble = document.createElement("div");
+      bubble.className = "mascot-whisper";
+      bubble.textContent = MASCOT_WHISPERS[Math.floor(Math.random() * MASCOT_WHISPERS.length)];
+      wrap.appendChild(bubble);
+      setTimeout(() => bubble.remove(), 2800);
+    }
+  });
+}
+
+setupMascotWhisper(document.getElementById("mascotAvatar"));
+setupMascotWhisper(document.getElementById("mascotSplash"));
+
+const KONAMI_SEQUENCE = [
+  "ArrowUp",
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowLeft",
+  "ArrowRight",
+  "b",
+  "a",
+];
+let konamiProgress = 0;
+
+document.addEventListener("keydown", (e) => {
+  const expected = KONAMI_SEQUENCE[konamiProgress];
+  if (e.key === expected || e.key.toLowerCase() === expected) {
+    konamiProgress += 1;
+    if (konamiProgress === KONAMI_SEQUENCE.length) {
+      konamiProgress = 0;
+      showKonamiEasterEgg();
+    }
+  } else {
+    konamiProgress = e.key === KONAMI_SEQUENCE[0] ? 1 : 0;
+  }
+});
+
+function showKonamiEasterEgg() {
+  const overlay = document.createElement("div");
+  overlay.className = "konami-overlay";
+  overlay.innerHTML = `
+    <div class="box">
+      <div style="font-size:32px;margin-bottom:10px;">✨</div>
+      <div style="font-weight:700;margin-bottom:6px;">숨겨진 위로를 찾았어요</div>
+      <div style="font-size:13px;color:var(--muted);">오늘 하루도, 실패해도 괜찮았어요.<br />당신은 이미 충분히 애쓰고 있어요.</div>
+    </div>
+  `;
+  for (let i = 0; i < 18; i++) {
+    const sparkle = document.createElement("div");
+    sparkle.className = "konami-sparkle";
+    sparkle.textContent = ["✨", "💜", "⭐", "🩹"][i % 4];
+    sparkle.style.left = `${Math.random() * 100}%`;
+    sparkle.style.bottom = "0";
+    sparkle.style.animationDelay = `${Math.random() * 1.5}s`;
+    overlay.appendChild(sparkle);
+  }
+  overlay.addEventListener("click", () => overlay.remove());
+  document.body.appendChild(overlay);
+  setTimeout(() => overlay.remove(), 6000);
+}
 
 if (getToken()) {
   renderMainView();

@@ -15,6 +15,18 @@
     color: #222;
   }
 
+  .staple {
+    position: absolute;
+    top: 10mm;
+    left: 14mm;
+    width: 7mm;
+    height: 18mm;
+    background: linear-gradient(90deg, #8a8a8a, #d8d8d8 40%, #8a8a8a);
+    border-radius: 1.5mm;
+    transform: rotate(-8deg);
+    box-shadow: 0 0.5mm 1mm rgba(0,0,0,0.4);
+  }
+
   .cover {
     height: 100vh;
     display: flex;
@@ -25,6 +37,7 @@
     background: {{ theme.background }};
     color: {{ theme.text }};
     page-break-after: always;
+    position: relative;
   }
   .cover h1 { font-size: 28pt; margin-bottom: 12pt; }
   .cover .meta { font-size: 11pt; color: {{ theme.accent }}; margin-top: 6pt; }
@@ -56,9 +69,11 @@
 </head>
 <body>
   <section class="cover">
+    <div class="staple"></div>
     <h1>{{ title }}</h1>
     <div class="meta">{{ author }}</div>
     <div class="meta">{{ period_start }} ~ {{ period_end }}</div>
+    <div class="meta" style="margin-top:18pt;font-size:9pt;opacity:0.6;">집에서 출력해 스테이플러로 찍은 나만의 노트</div>
   </section>
 
   <section class="toc">

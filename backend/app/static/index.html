@@ -10,7 +10,9 @@
 <div id="app">
 
   <div id="authView">
-    <img src="/static/mascot.png" alt="마스코트" class="mascot mascot-splash" />
+    <div class="mascot-wrap" style="display:flex;justify-content:center;">
+      <img src="/static/mascot.png" alt="마스코트" class="mascot mascot-splash" id="mascotSplash" />
+    </div>
     <h1>실패작 노트</h1>
     <div class="subtitle">오늘의 실패 한 장을 적어보세요.</div>
     <div class="card">
@@ -28,7 +30,9 @@
 
   <div id="mainView" class="hidden">
     <div class="header-row">
-      <img src="/static/mascot.png" alt="마스코트" class="mascot mascot-avatar" />
+      <div class="mascot-wrap">
+        <img src="/static/mascot.png" alt="마스코트" class="mascot mascot-avatar" id="mascotAvatar" />
+      </div>
       <div>
         <h1>실패작 노트</h1>
         <div class="subtitle">오늘 <span id="todayCount" class="count-badge">0/5</span></div>
@@ -84,22 +88,22 @@
 
     <section id="view-exports" class="view hidden">
       <div class="card">
-        <h2 class="card-title">PDF로 출판하기</h2>
-        <div class="subtitle" style="text-align:left;margin-bottom:12px;">155장을 채워 완결된 노트북만 출판할 수 있어요.</div>
+        <h2 class="card-title">PDF로 출력하기</h2>
+        <div class="subtitle" style="text-align:left;margin-bottom:12px;">155장을 채우면 PDF로 출력해서 스테이플러로 찍을 수 있어요.</div>
         <label>노트북 선택</label>
         <select id="exportNotebookSelect"></select>
-        <label>제본 스타일</label>
+        <label>글씨 방향</label>
         <select id="exportBindingSelect">
-          <option value="kr">한국식</option>
-          <option value="jp">일본식</option>
+          <option value="kr">가로쓰기</option>
+          <option value="jp">세로쓰기</option>
         </select>
         <label>표지 테마</label>
         <input id="exportCoverTheme" type="text" value="mono" />
         <div id="exportError" class="error hidden"></div>
-        <button id="exportCreateBtn">PDF 생성</button>
+        <button id="exportCreateBtn">PDF로 출력하기</button>
       </div>
       <div class="card">
-        <h2 class="card-title">내보낸 파일</h2>
+        <h2 class="card-title">출력한 노트</h2>
         <div id="exportList"></div>
       </div>
     </section>
