@@ -291,3 +291,24 @@ insert into public.keyword_dictionary (term, category, weight) values
     ('더 이상 살고 싶지 않다', 'crisis', 10.0),
     ('자살하고 싶다', 'crisis', 10.0)
 on conflict (term, category) do nothing;
+
+-- =========================================================
+-- 9. pet_state: 마스코트 키우기(다마고치) 기능
+--    글을 쓸 때마다 exp/애정도가 오르고, 일정 기간 글을 쓰지 않으면
+--    애정도가 깎인다. 레벨업은 exp 100마다 1씩.
+-- =========================================================
+create table if not exists public.pet_state (
+    user_id uuid primary key references auth.users(id) on delete cascade,
+    level int not null default 1,
+    exp int not null default 0,
+    affection int not null default 60,
+    last_interaction_at timestamptz not null default now(),
+    last_patted_at timestamptz,
+    updated_at timestamptz not null default now()
+);
+
+alter table public.pet_state enable row level security;
+
+drop policy if exists "본인 펫 상태만 조회/수정" on public.pet_state;
+create policy "본인 펫 상태만 조회/수정" on public.pet_state
+    for all using (auth.uid() = user_id) with check (auth.uid() = user_id);

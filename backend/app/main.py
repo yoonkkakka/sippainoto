@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from playwright.async_api import async_playwright
 
-from app.routers import account, entries, exports, notebooks, stats
+from app.routers import account, entries, exports, notebooks, pet, stats
 
 STATIC_DIR = Path(__file__).parent / "static"
 
@@ -31,6 +31,7 @@ app.include_router(notebooks.router)
 app.include_router(exports.router)
 app.include_router(stats.router)
 app.include_router(account.router)
+app.include_router(pet.router)
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 

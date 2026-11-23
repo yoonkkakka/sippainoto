@@ -103,6 +103,7 @@ const viewLoaders = {
     loadEntries();
   },
   notebooks: loadNotebooks,
+  pet: loadPetView,
   stats: loadStats,
   exports: loadExportsView,
   settings: loadSettings,
@@ -505,6 +506,49 @@ document.getElementById("dataExportBtn").addEventListener("click", async () => {
     URL.revokeObjectURL(url);
   } catch (e) {
     alert(e.message);
+  }
+});
+
+const PET_MOOD_IMAGES = {
+  happy: "/static/mascot_happy.png",
+  normal: "/static/mascot_neutral.png",
+  sad: "/static/mascot_sad.png",
+  angry: "/static/mascot_angry.png",
+};
+const PET_MOOD_LABELS = {
+  happy: "기분이 좋아 보여요",
+  normal: "평온해 보여요",
+  sad: "조금 외로워 보여요",
+  angry: "삐진 것 같아요",
+};
+
+function renderPetState(pet) {
+  document.getElementById("petMascotImg").src = PET_MOOD_IMAGES[pet.mood];
+  document.getElementById("petLevelLabel").textContent = `Lv.${pet.level}`;
+  document.getElementById("petExpBar").style.width = `${pet.exp}%`;
+  document.getElementById("petAffectionBar").style.width = `${pet.affection}%`;
+  document.getElementById("petMoodLabel").textContent = PET_MOOD_LABELS[pet.mood] || "";
+}
+
+async function loadPetView() {
+  const errorEl = document.getElementById("petError");
+  hideError(errorEl);
+  try {
+    const pet = await api("/pet");
+    renderPetState(pet);
+  } catch (e) {
+    showError(errorEl, e.message);
+  }
+}
+
+document.getElementById("petPatBtn").addEventListener("click", async () => {
+  const errorEl = document.getElementById("petError");
+  hideError(errorEl);
+  try {
+    const pet = await api("/pet/pat", { method: "POST" });
+    renderPetState(pet);
+  } catch (e) {
+    showError(errorEl, e.message);
   }
 });
 

@@ -278,6 +278,14 @@ button:disabled { opacity: 0.45; cursor: default; box-shadow: none; }
   padding: 6px 10px;
 }
 
+.pet-mascot {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 24px;
+  margin-bottom: 8px;
+}
+
 .mascot-wrap { position: relative; }
 
 .mascot-whisper {

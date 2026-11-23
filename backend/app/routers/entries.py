@@ -15,6 +15,7 @@ from app.services.notebooks import (
     get_or_create_current_notebook,
     today_in_user_timezone,
 )
+from app.services.pet import EXP_PER_ENTRY, add_exp
 
 router = APIRouter(prefix="/entries", tags=["entries"])
 
@@ -77,6 +78,11 @@ async def create_entry(
     # 톤 점수 재판단은 수동 태그/위기 감지 여부와 무관하게 항상 백그라운드로 실행한다.
     # (이미 감정 노트에 있는 글이면 reclassify_entry_tone이 점수만 기록하고 이동은 생략)
     background_tasks.add_task(reclassify_entry_tone, client, entry["id"], user_id)
+
+    try:
+        add_exp(client, user_id, EXP_PER_ENTRY)
+    except Exception:
+        pass
 
     return {
         "entry": entry,
