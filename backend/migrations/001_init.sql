@@ -218,6 +218,10 @@ create policy "본인 글의 소속 노트/점수만 변경" on public.entries
         )
     );
 
+drop policy if exists "본인 글만 삭제" on public.entries;
+create policy "본인 글만 삭제" on public.entries
+    for delete using (auth.uid() = user_id);
+
 -- 전체 로그인 사용자에게 읽기만 허용. 쓰기 정책은 두지 않아
 -- Supabase 대시보드(Table Editor, service_role)에서만 추가/수정 가능.
 drop policy if exists "모든 로그인 사용자 읽기 가능" on public.keyword_dictionary;

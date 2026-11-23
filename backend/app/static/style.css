@@ -91,6 +91,19 @@ label {
   font-weight: 600;
 }
 
+select {
+  width: 100%;
+  font-size: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  font-family: inherit;
+  background: #fff;
+  color: var(--text);
+}
+select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
 input, textarea {
   width: 100%;
   font-size: 14px;
@@ -163,13 +176,14 @@ button:disabled { opacity: 0.45; cursor: default; box-shadow: none; }
 .error { color: var(--danger); font-size: 13px; margin: -4px 0 12px; }
 .hidden { display: none !important; }
 
-#crisisModal {
+.modal-overlay {
   position: fixed; inset: 0;
   background: rgba(16, 7, 26, 0.72);
   display: flex; align-items: center; justify-content: center;
   padding: 20px;
+  z-index: 100;
 }
-#crisisModal .box {
+.modal-overlay .box {
   background: var(--card);
   border-radius: 20px;
   padding: 30px 24px;
@@ -189,4 +203,77 @@ button:disabled { opacity: 0.45; cursor: default; box-shadow: none; }
   color: var(--muted);
   text-decoration: underline;
   cursor: pointer;
+}
+
+.tabbar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  margin-bottom: 16px;
+  padding-bottom: 2px;
+}
+.tabBtn {
+  flex: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e3d6fb;
+  box-shadow: none;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 14px;
+  border-radius: 999px;
+}
+.tabBtn.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #fff;
+}
+
+.card-title {
+  font-size: 15px;
+  margin: 0 0 12px;
+  color: var(--text);
+}
+.card-subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 16px 0 8px;
+}
+
+.notebook-block {
+  border-bottom: 1px solid var(--card-border);
+  padding: 12px 0;
+}
+.notebook-block:last-child { border-bottom: none; }
+.notebook-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+  border-radius: 999px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  padding: 4px 0;
+}
+.stat-row-block { margin-bottom: 10px; }
+
+.move-btn {
+  font-size: 12px;
+  padding: 6px 10px;
 }

@@ -181,3 +181,13 @@ async def move_entry(entry_id: str, current_user: dict = Depends(get_current_use
     complete_notebook_if_full(client, target_notebook)
 
     return updated.data[0]
+
+
+@router.delete("/{entry_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_entry(entry_id: str, current_user: dict = Depends(get_current_user)) -> None:
+    client = current_user["client"]
+    user_id = current_user["id"]
+
+    deleted = client.table("entries").delete().eq("id", entry_id).eq("user_id", user_id).execute()
+    if not deleted.data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="글을 찾을 수 없습니다.")
