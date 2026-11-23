@@ -191,7 +191,7 @@ async function loadEntries() {
       .map(
         (e) => `
       <div class="entry ${e.is_manual_emotion_tag ? "emotion" : "failure"}">
-        <div class="entry-date">${e.is_manual_emotion_tag ? "💭" : "💔"} ${e.entry_date}</div>
+        <div class="entry-date">${e.is_manual_emotion_tag ? ICON_BUBBLE : ICON_HEART} ${e.entry_date}</div>
         <div class="entry-title">${e.title || "(제목 없음)"}
           <span class="tag ${e.is_manual_emotion_tag ? "emotion" : "failure"}">
             ${e.is_manual_emotion_tag ? "감정" : "실패"}
@@ -231,6 +231,19 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+const ICON_HEART =
+  '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20s-7-4.4-9.4-8.8C1 8.3 2.6 5 6 5c2 0 3.3 1 4 2.2C10.7 6 12 5 14 5c3.4 0 5 3.3 3.4 6.2C19 15.6 12 20 12 20Z"/></svg>';
+const ICON_BUBBLE =
+  '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16v10H9l-4 3.5v-3.5H4Z"/></svg>';
+const ICON_BADGE =
+  '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.5"/><path d="M9 13.5 7.5 20l4.5-2.5 4.5 2.5-1.5-6.5"/></svg>';
+const ICON_PENCIL =
+  '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+const ICON_WAVE =
+  '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/><path d="M3 17c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/></svg>';
+const ICON_SPARKLE =
+  '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8Z"/></svg>';
+
 document.getElementById("submitEntryBtn").addEventListener("click", async () => {
   hideError(entryError);
   const title = document.getElementById("entryTitle").value.trim();
@@ -260,12 +273,12 @@ document.getElementById("submitEntryBtn").addEventListener("click", async () => 
 });
 
 const MILESTONE_MESSAGES = {
-  1: "🎉 첫 기록을 남겼어요. 여기까지 온 것만으로도 잘한 거예요.",
-  10: "🎉 벌써 10장째예요. 꾸준히 쓰고 있네요.",
-  30: "🎉 30장 달성! 한 달치 실패가 쌓였어요.",
-  50: "🎉 50장이에요. 절반을 향해 가고 있어요.",
-  100: "🎉 100장 돌파! 이 정도면 책 한 권이에요.",
-  155: "🎉 155장, 한 권을 가득 채웠어요. 수고했어요.",
+  1: "첫 기록을 남겼어요. 여기까지 온 것만으로도 잘한 거예요.",
+  10: "벌써 10장째예요. 꾸준히 쓰고 있네요.",
+  30: "30장 달성. 한 달치 실패가 쌓였어요.",
+  50: "50장이에요. 절반을 향해 가고 있어요.",
+  100: "100장 돌파. 이 정도면 책 한 권이에요.",
+  155: "155장, 한 권을 가득 채웠어요. 수고했어요.",
 };
 
 async function checkMilestone() {
@@ -281,7 +294,7 @@ async function checkMilestone() {
 function showMilestoneToast(message) {
   const toast = document.createElement("div");
   toast.className = "milestone-toast";
-  toast.textContent = message;
+  toast.innerHTML = `${ICON_SPARKLE} <span>${escapeHtml(message)}</span>`;
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 3200);
 }
@@ -289,10 +302,10 @@ function showMilestoneToast(message) {
 const NOTEBOOK_TYPE_LABEL = { failure: "실패작 노트", emotion: "감정 노트" };
 const NOTEBOOK_STATUS_LABEL = { in_progress: "작성 중", completed: "완결" };
 const TONE_LABEL = {
-  tone_depression: "😔 우울",
-  tone_helplessness: "🫠 무기력",
-  tone_self_deprecation: "💢 자책",
-  tone_anger: "🔥 분노",
+  tone_depression: "우울",
+  tone_helplessness: "무기력",
+  tone_self_deprecation: "자책",
+  tone_anger: "분노",
 };
 
 async function loadNotebooks() {
@@ -338,7 +351,7 @@ async function loadNotebooks() {
           return `
           <div class="notebook-block">
             <div class="notebook-head">
-              <span>${type === "failure" ? "💔" : "💭"}</span>
+              <span style="color:var(--accent-dark);">${type === "failure" ? ICON_HEART : ICON_BUBBLE}</span>
               <strong>${nb.volume_no}권</strong>
               <span class="tag ${type}">${NOTEBOOK_STATUS_LABEL[nb.status] || nb.status}</span>
               <span style="margin-left:auto;font-size:12px;color:var(--muted);">${nb.entry_count}/${nb.page_limit}</span>
@@ -407,11 +420,11 @@ async function loadStats() {
         <div class="num">${stats.total_entries}</div>
         <div class="label">장을 써냈어요</div>
       </div>
-      <h3 class="card-subtitle">📕 완결한 노트북</h3>
+      <h3 class="card-subtitle">${ICON_BADGE} 완결한 노트북</h3>
       ${completedRows}
-      <h3 class="card-subtitle">✏️ 진행 중인 노트북</h3>
+      <h3 class="card-subtitle">${ICON_PENCIL} 진행 중인 노트북</h3>
       ${progressRows}
-      <h3 class="card-subtitle">💭 감정 톤 분포</h3>
+      <h3 class="card-subtitle">${ICON_WAVE} 감정 톤 분포</h3>
       ${toneRows}
     `;
   } catch (e) {
