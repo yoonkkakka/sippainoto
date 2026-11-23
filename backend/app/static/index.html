@@ -41,12 +41,12 @@
     </div>
 
     <nav class="tabbar">
-      <button class="tabBtn active" data-view="today">오늘</button>
-      <button class="tabBtn" data-view="notebooks">노트북</button>
-      <button class="tabBtn" data-view="pet">루나</button>
-      <button class="tabBtn" data-view="stats">통계</button>
-      <button class="tabBtn" data-view="exports">보관함</button>
-      <button class="tabBtn" data-view="settings">설정</button>
+      <button class="tabBtn active" data-view="today">📝 오늘</button>
+      <button class="tabBtn" data-view="notebooks">📚 노트북</button>
+      <button class="tabBtn" data-view="pet">🌙 루나</button>
+      <button class="tabBtn" data-view="stats">📊 통계</button>
+      <button class="tabBtn" data-view="exports">🗂 보관함</button>
+      <button class="tabBtn" data-view="settings">⚙️ 설정</button>
     </nav>
 
     <section id="view-today" class="view">
@@ -64,26 +64,26 @@
       </div>
 
       <div class="card">
-        <h2 class="card-title">최근 기록</h2>
+        <h2 class="card-title">📒 최근 기록</h2>
         <div id="entryList"></div>
       </div>
     </section>
 
     <section id="view-notebooks" class="view hidden">
       <div class="card">
-        <h2 class="card-title">실패작 노트</h2>
+        <h2 class="card-title">💔 실패작 노트</h2>
         <div id="notebookList-failure"></div>
       </div>
       <div class="card">
-        <h2 class="card-title">감정 노트</h2>
+        <h2 class="card-title">💭 감정 노트</h2>
         <div id="notebookList-emotion"></div>
       </div>
     </section>
 
     <section id="view-pet" class="view hidden">
       <div class="card" style="text-align:center;">
-        <h2 class="card-title">루나 키우기</h2>
-        <div class="mascot-wrap" style="display:inline-block;">
+        <h2 class="card-title">🌙 루나 키우기</h2>
+        <div class="pet-mascot-wrap">
           <img src="/static/mascot_neutral.png" alt="루나" class="mascot pet-mascot" id="petMascotImg" />
         </div>
         <div id="petStageLabel" class="count-badge" style="display:block;width:fit-content;margin:0 auto 6px;">낯가림쟁이 루나</div>
@@ -102,14 +102,14 @@
 
     <section id="view-stats" class="view hidden">
       <div class="card" id="statsCard">
-        <h2 class="card-title">통계</h2>
+        <h2 class="card-title">📊 통계</h2>
         <div id="statsBody"></div>
       </div>
     </section>
 
     <section id="view-exports" class="view hidden">
       <div class="card">
-        <h2 class="card-title">PDF로 출력하기</h2>
+        <h2 class="card-title">🖨️ PDF로 출력하기</h2>
         <div class="subtitle" style="text-align:left;margin-bottom:12px;">155장을 채우면 PDF로 출력해서 스테이플러로 찍을 수 있어요.</div>
         <label>노트북 선택</label>
         <select id="exportNotebookSelect"></select>
@@ -124,14 +124,14 @@
         <button id="exportCreateBtn">PDF로 출력하기</button>
       </div>
       <div class="card">
-        <h2 class="card-title">출력한 노트</h2>
+        <h2 class="card-title">📦 출력한 노트</h2>
         <div id="exportList"></div>
       </div>
     </section>
 
     <section id="view-settings" class="view hidden">
       <div class="card">
-        <h2 class="card-title">계정 설정</h2>
+        <h2 class="card-title">⚙️ 계정 설정</h2>
         <label>닉네임</label>
         <input id="settingsNickname" type="text" />
         <label>타임존</label>
@@ -144,7 +144,7 @@
         <button id="settingsSaveBtn">저장</button>
       </div>
       <div class="card">
-        <h2 class="card-title">내 데이터 내보내기</h2>
+        <h2 class="card-title">💾 내 데이터 내보내기</h2>
         <div class="subtitle" style="text-align:left;margin-bottom:12px;">프로필, 노트북, 글 전체를 JSON 파일로 내려받아요.</div>
         <button id="dataExportBtn" class="secondary">JSON으로 내려받기</button>
       </div>

@@ -190,8 +190,8 @@ async function loadEntries() {
     list.innerHTML = entries
       .map(
         (e) => `
-      <div class="entry">
-        <div class="entry-date">${e.entry_date}</div>
+      <div class="entry ${e.is_manual_emotion_tag ? "emotion" : "failure"}">
+        <div class="entry-date">${e.is_manual_emotion_tag ? "💭" : "💔"} ${e.entry_date}</div>
         <div class="entry-title">${e.title || "(제목 없음)"}
           <span class="tag ${e.is_manual_emotion_tag ? "emotion" : "failure"}">
             ${e.is_manual_emotion_tag ? "감정" : "실패"}
@@ -288,6 +288,12 @@ function showMilestoneToast(message) {
 
 const NOTEBOOK_TYPE_LABEL = { failure: "실패작 노트", emotion: "감정 노트" };
 const NOTEBOOK_STATUS_LABEL = { in_progress: "작성 중", completed: "완결" };
+const TONE_LABEL = {
+  tone_depression: "😔 우울",
+  tone_helplessness: "🫠 무기력",
+  tone_self_deprecation: "💢 자책",
+  tone_anger: "🔥 분노",
+};
 
 async function loadNotebooks() {
   const containers = {
@@ -316,7 +322,7 @@ async function loadNotebooks() {
           const entriesHtml = entries
             .map(
               (e) => `
-            <div class="entry">
+            <div class="entry ${type}">
               <div class="entry-date">${e.entry_date}</div>
               <div class="entry-title">${e.title || "(제목 없음)"}</div>
               <div class="entry-content">${escapeHtml(e.content)}</div>
@@ -332,6 +338,7 @@ async function loadNotebooks() {
           return `
           <div class="notebook-block">
             <div class="notebook-head">
+              <span>${type === "failure" ? "💔" : "💭"}</span>
               <strong>${nb.volume_no}권</strong>
               <span class="tag ${type}">${NOTEBOOK_STATUS_LABEL[nb.status] || nb.status}</span>
               <span style="margin-left:auto;font-size:12px;color:var(--muted);">${nb.entry_count}/${nb.page_limit}</span>
@@ -389,19 +396,22 @@ async function loadStats() {
         const pct = Math.round((value / maxTone) * 100);
         return `
         <div class="stat-row-block">
-          <div class="stat-row"><span>${escapeHtml(category)}</span><strong>${value}</strong></div>
+          <div class="stat-row"><span>${TONE_LABEL[category] || escapeHtml(category)}</span><strong>${value}</strong></div>
           <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;"></div></div>
         </div>`;
       })
       .join("") || '<div style="color:var(--muted);font-size:13px;">아직 분석된 감정 톤이 없어요.</div>';
 
     body.innerHTML = `
-      <div class="stat-row" style="margin-bottom:10px;"><span>총 기록 수</span><strong>${stats.total_entries}장</strong></div>
-      <h3 class="card-subtitle">완결한 노트북</h3>
+      <div class="stat-hero">
+        <div class="num">${stats.total_entries}</div>
+        <div class="label">장을 써냈어요</div>
+      </div>
+      <h3 class="card-subtitle">📕 완결한 노트북</h3>
       ${completedRows}
-      <h3 class="card-subtitle">진행 중인 노트북</h3>
+      <h3 class="card-subtitle">✏️ 진행 중인 노트북</h3>
       ${progressRows}
-      <h3 class="card-subtitle">감정 톤 분포</h3>
+      <h3 class="card-subtitle">💭 감정 톤 분포</h3>
       ${toneRows}
     `;
   } catch (e) {
