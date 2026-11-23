@@ -11,7 +11,7 @@
 
   <div id="authView">
     <div class="mascot-wrap" style="display:flex;justify-content:center;">
-      <img src="/static/mascot.png" alt="마스코트" class="mascot mascot-splash" id="mascotSplash" />
+      <img src="/static/mascot.png" alt="루나" class="mascot mascot-splash" id="mascotSplash" />
     </div>
     <h1>실패작 노트</h1>
     <div class="subtitle">오늘의 실패 한 장을 적어보세요.</div>
@@ -31,7 +31,7 @@
   <div id="mainView" class="hidden">
     <div class="header-row">
       <div class="mascot-wrap">
-        <img src="/static/mascot.png" alt="마스코트" class="mascot mascot-avatar" id="mascotAvatar" />
+        <img src="/static/mascot.png" alt="루나" class="mascot mascot-avatar" id="mascotAvatar" />
       </div>
       <div>
         <h1>실패작 노트</h1>
@@ -43,7 +43,7 @@
     <nav class="tabbar">
       <button class="tabBtn active" data-view="today">오늘</button>
       <button class="tabBtn" data-view="notebooks">노트북</button>
-      <button class="tabBtn" data-view="pet">마스코트</button>
+      <button class="tabBtn" data-view="pet">루나</button>
       <button class="tabBtn" data-view="stats">통계</button>
       <button class="tabBtn" data-view="exports">보관함</button>
       <button class="tabBtn" data-view="settings">설정</button>
@@ -82,15 +82,20 @@
 
     <section id="view-pet" class="view hidden">
       <div class="card" style="text-align:center;">
-        <h2 class="card-title">마스코트 키우기</h2>
-        <img src="/static/mascot_neutral.png" alt="마스코트" class="mascot pet-mascot" id="petMascotImg" />
+        <h2 class="card-title">루나 키우기</h2>
+        <div class="mascot-wrap" style="display:inline-block;">
+          <img src="/static/mascot_neutral.png" alt="루나" class="mascot pet-mascot" id="petMascotImg" />
+        </div>
+        <div id="petStageLabel" class="count-badge" style="display:block;width:fit-content;margin:0 auto 6px;">낯가림쟁이 루나</div>
         <div id="petLevelLabel" class="subtitle" style="text-align:center;margin-bottom:10px;">Lv.1</div>
-        <div class="card-subtitle" style="margin-top:4px;">경험치</div>
+        <div id="petSpeechLabel" class="subtitle" style="text-align:center;margin-bottom:14px;min-height:18px;"></div>
+        <div class="card-subtitle" style="margin-top:4px;">경험치 (<span id="petExpText">0/100</span>)</div>
         <div class="progress-bar"><div id="petExpBar" class="progress-fill" style="width:0%;"></div></div>
-        <div class="card-subtitle">애정도</div>
+        <div class="card-subtitle">애정도 (<span id="petAffectionText">0</span>/100)</div>
         <div class="progress-bar"><div id="petAffectionBar" class="progress-fill" style="width:0%;"></div></div>
         <div id="petMoodLabel" class="subtitle" style="text-align:center;margin:10px 0;"></div>
         <button id="petPatBtn">쓰다듬기</button>
+        <div id="petPatCountLabel" class="subtitle" style="text-align:center;margin-top:8px;"></div>
         <div id="petError" class="error hidden" style="margin-top:10px;"></div>
       </div>
     </section>

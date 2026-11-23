@@ -293,7 +293,7 @@ insert into public.keyword_dictionary (term, category, weight) values
 on conflict (term, category) do nothing;
 
 -- =========================================================
--- 9. pet_state: 마스코트 키우기(다마고치) 기능
+-- 9. pet_state: 루나(마스코트) 키우기 다마고치 기능
 --    글을 쓸 때마다 exp/애정도가 오르고, 일정 기간 글을 쓰지 않으면
 --    애정도가 깎인다. 레벨업은 exp 100마다 1씩.
 -- =========================================================
@@ -306,6 +306,9 @@ create table if not exists public.pet_state (
     last_patted_at timestamptz,
     updated_at timestamptz not null default now()
 );
+
+alter table public.pet_state add column if not exists total_pats int not null default 0;
+alter table public.pet_state add column if not exists created_at timestamptz not null default now();
 
 alter table public.pet_state enable row level security;
 

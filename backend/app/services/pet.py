@@ -7,6 +7,8 @@ AFFECTION_PER_PAT = 5
 AFFECTION_DECAY_PER_DAY = 5
 MAX_AFFECTION = 100
 
+PET_NAME = "루나"
+
 
 def _mood_from_affection(affection: int) -> str:
     if affection >= 80:
@@ -16,6 +18,16 @@ def _mood_from_affection(affection: int) -> str:
     if affection >= 20:
         return "sad"
     return "angry"
+
+
+def _stage_from_level(level: int) -> str:
+    if level >= 10:
+        return "소울메이트 루나"
+    if level >= 6:
+        return "단짝 루나"
+    if level >= 3:
+        return "친구가 된 루나"
+    return "낯가림쟁이 루나"
 
 
 def _apply_decay(pet: dict) -> dict:
@@ -48,12 +60,21 @@ def get_or_create_pet(client, user_id: str) -> dict:
 
 
 def to_pet_state(pet: dict) -> dict:
+    created = datetime.fromisoformat(pet["created_at"])
+    if created.tzinfo is None:
+        created = created.replace(tzinfo=timezone.utc)
+    days_together = max((datetime.now(timezone.utc) - created).days, 0) + 1
+
     return {
+        "name": PET_NAME,
         "level": pet["level"],
         "exp": pet["exp"],
         "exp_to_next": EXP_PER_LEVEL - pet["exp"],
         "affection": pet["affection"],
         "mood": _mood_from_affection(pet["affection"]),
+        "stage": _stage_from_level(pet["level"]),
+        "total_pats": pet.get("total_pats", 0),
+        "days_together": days_together,
         "last_interaction_at": pet["last_interaction_at"],
     }
 
@@ -101,6 +122,7 @@ def pat_pet(client, user_id: str) -> tuple[dict, bool]:
         .update(
             {
                 "affection": affection,
+                "total_pats": pet.get("total_pats", 0) + 1,
                 "last_patted_at": datetime.now(timezone.utc).isoformat(),
                 "last_interaction_at": datetime.now(timezone.utc).isoformat(),
             }

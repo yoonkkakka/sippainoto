@@ -521,13 +521,41 @@ const PET_MOOD_LABELS = {
   sad: "조금 외로워 보여요",
   angry: "삐진 것 같아요",
 };
+const PET_SPEECH_LINES = {
+  happy: [
+    "루나: 오늘도 당신 덕분에 행복해요!",
+    "루나: 꼬리가 멈추질 않아요!",
+    "루나: 같이 있어서 좋아요.",
+  ],
+  normal: [
+    "루나: 오늘 하루는 어땠어요?",
+    "루나: 곁에 있을게요, 천천히 적어봐요.",
+    "루나: 당신의 하루가 궁금해요.",
+  ],
+  sad: [
+    "루나: 요즘 좀 심심했어요...",
+    "루나: 보고 싶었어요, 글 좀 써줄래요?",
+    "루나: 조금 외로웠어요.",
+  ],
+  angry: [
+    "루나: 흥, 한참 기다렸단 말이에요!",
+    "루나: 삐졌어요. 쓰다듬어주세요.",
+    "루나: 너무 오랜만이잖아요!",
+  ],
+};
 
 function renderPetState(pet) {
   document.getElementById("petMascotImg").src = PET_MOOD_IMAGES[pet.mood];
-  document.getElementById("petLevelLabel").textContent = `Lv.${pet.level}`;
+  document.getElementById("petStageLabel").textContent = pet.stage;
+  document.getElementById("petLevelLabel").textContent = `Lv.${pet.level} · 루나와 만난 지 ${pet.days_together}일째`;
   document.getElementById("petExpBar").style.width = `${pet.exp}%`;
+  document.getElementById("petExpText").textContent = `${pet.exp}/100`;
   document.getElementById("petAffectionBar").style.width = `${pet.affection}%`;
+  document.getElementById("petAffectionText").textContent = `${pet.affection}`;
   document.getElementById("petMoodLabel").textContent = PET_MOOD_LABELS[pet.mood] || "";
+  const lines = PET_SPEECH_LINES[pet.mood] || [];
+  document.getElementById("petSpeechLabel").textContent = lines[Math.floor(Math.random() * lines.length)] || "";
+  document.getElementById("petPatCountLabel").textContent = `지금까지 ${pet.total_pats}번 쓰다듬었어요`;
 }
 
 async function loadPetView() {
