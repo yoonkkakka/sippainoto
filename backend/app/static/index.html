@@ -137,6 +137,7 @@
       <div class="card">
         <h2 class="card-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3.5h12V9"/><rect x="4" y="9" width="16" height="8" rx="1.3"/><path d="M6 17v3.5h12V17"/></svg> PDF로 출력하기</h2>
         <div class="subtitle" style="text-align:left;margin-bottom:12px;">155장을 채우면 PDF로 출력해서 스테이플러로 찍을 수 있어요.</div>
+        <div id="exportProgressHint"></div>
         <label>노트북 선택</label>
         <select id="exportNotebookSelect"></select>
         <label>글씨 방향</label>
@@ -150,7 +151,7 @@
         <button id="exportCreateBtn">PDF로 출력하기</button>
       </div>
       <div class="card">
-        <h2 class="card-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5 12 3l8.5 4.5-8.5 4.5-8.5-4.5Z"/><path d="M3.5 7.5v9L12 21l8.5-4.5v-9"/><path d="M12 12v9"/></svg> 출력한 노트</h2>
+        <h2 class="card-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5 12 3l8.5 4.5-8.5 4.5-8.5-4.5Z"/><path d="M3.5 7.5v9L12 21l8.5-4.5v-9"/><path d="M12 12v9"/></svg> 출력한 노트<span id="exportCountBadge" class="count-badge" style="margin-left:auto;font-size:11px;padding:3px 10px;"></span></h2>
         <div id="exportList"></div>
       </div>
     </section>

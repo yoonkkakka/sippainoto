@@ -505,35 +505,73 @@ async function loadStats() {
   }
 }
 
+const ICON_SEAL =
+  '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5a4.8 4.8 0 1 1 0 9.6 4.8 4.8 0 0 1 0-9.6Z"/><path d="M8.6 11.3 5.8 21l6.2-3 6.2 3-2.8-9.7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ICON_DOWNLOAD =
+  '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4.5 19.5h15"/></svg>';
+const ICON_ARCHIVE =
+  '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="4.5" rx="1.2"/><path d="M4.5 9v8.5a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V9"/><path d="M10 13.5h4"/></svg>';
+
+function renderExportProgressHint(notebooks) {
+  const el = document.getElementById("exportProgressHint");
+  if (!el) return;
+  const inProgress = notebooks.filter((n) => n.status !== "completed");
+  if (!inProgress.length) {
+    el.innerHTML = "";
+    return;
+  }
+  el.innerHTML = inProgress
+    .map((n) => {
+      const pct = Math.min(100, Math.round((n.entry_count / n.page_limit) * 100));
+      return `
+      <div class="stat-row-block">
+        <div class="stat-row"><span>${n.type === "failure" ? ICON_HEART : ICON_BUBBLE} ${NOTEBOOK_TYPE_LABEL[n.type] || n.type} ${n.volume_no}권</span><strong>${n.entry_count}/${n.page_limit}</strong></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;"></div></div>
+      </div>`;
+    })
+    .join("");
+}
+
 async function loadExportsView() {
   const select = document.getElementById("exportNotebookSelect");
   const list = document.getElementById("exportList");
+  const countBadge = document.getElementById("exportCountBadge");
+  let notebookMap = {};
   try {
     const notebooks = await api("/notebooks");
+    notebookMap = Object.fromEntries(notebooks.map((n) => [n.id, n]));
     const completed = notebooks.filter((n) => n.status === "completed");
     select.innerHTML = completed.length
       ? completed
           .map((n) => `<option value="${n.id}">${NOTEBOOK_TYPE_LABEL[n.type] || n.type} ${n.volume_no}권</option>`)
           .join("")
       : '<option value="">완결된 노트북이 없어요</option>';
+    renderExportProgressHint(notebooks);
   } catch (e) {
     select.innerHTML = `<option value="">${e.message}</option>`;
   }
 
   try {
     const exports = await api("/exports");
+    countBadge.textContent = `${exports.length}권`;
     list.innerHTML = exports.length
       ? exports
-          .map(
-            (ex) => `
-        <div class="entry">
-          <div class="entry-date">${new Date(ex.created_at).toLocaleString()}</div>
-          <div class="entry-title">📎 ${ex.binding_style === "kr" ? "가로쓰기" : "세로쓰기"} · ${escapeHtml(ex.cover_theme)}</div>
-          <a href="${ex.download_url}" target="_blank" rel="noopener">다운로드해서 스테이플 찍기</a>
-        </div>`
-          )
+          .map((ex) => {
+            const nb = notebookMap[ex.notebook_id];
+            const title = nb ? `${NOTEBOOK_TYPE_LABEL[nb.type] || nb.type} ${nb.volume_no}권` : "보관된 노트";
+            return `
+        <div class="export-card">
+          <div class="export-seal">${ICON_SEAL}</div>
+          <div class="export-body">
+            <div class="export-title">${title}</div>
+            <div class="export-meta">${ex.binding_style === "kr" ? "가로쓰기" : "세로쓰기"} · ${escapeHtml(ex.cover_theme)}</div>
+            <div class="export-date">${new Date(ex.created_at).toLocaleString()}</div>
+          </div>
+          <a class="export-download" href="${ex.download_url}" target="_blank" rel="noopener">${ICON_DOWNLOAD}<span>다운로드</span></a>
+        </div>`;
+          })
           .join("")
-      : '<div style="color:var(--muted);font-size:13px;">아직 내보낸 파일이 없어요.</div>';
+      : `<div class="export-empty">${ICON_ARCHIVE}<div>아직 봉인된 노트가 없어요.<br />노트북을 다 채우면 여기에 보관돼요.</div></div>`;
   } catch (e) {
     list.innerHTML = `<div class="error">${e.message}</div>`;
   }
