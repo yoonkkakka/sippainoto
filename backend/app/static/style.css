@@ -538,6 +538,25 @@ button:disabled { opacity: 0.45; cursor: default; box-shadow: none; }
   color: #3c2a57;
 }
 
+.excuse-result {
+  background: var(--bandage);
+  border: 1px dashed var(--pink-soft);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #5c3f54;
+  text-align: center;
+  line-height: 1.6;
+}
+.excuse-result.pop {
+  animation: excuse-pop 0.3s ease-out;
+}
+@keyframes excuse-pop {
+  from { opacity: 0; transform: scale(0.92) translateY(4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
 .move-btn {
   font-size: 12px;
   padding: 6px 10px;

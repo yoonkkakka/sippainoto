@@ -812,6 +812,41 @@ function renderComfortQuote() {
   el.textContent = COMFORT_QUOTES[hash % COMFORT_QUOTES.length];
 }
 
+const LUNA_EXCUSES = [
+  "오늘 그런 건 수성이 역행 중이라 그래요. 제 탓도, 당신 탓도 아니에요.",
+  "지구 자전 속도가 오늘따라 미묘하게 빨랐대요. 그래서 좀 꼬인 거예요.",
+  "오늘은 원래 우주가 쉬는 날이었어요. 몰랐죠?",
+  "달이 차오르는 중이라 다들 정신이 살짝 산만한 날이었어요.",
+  "별자리 운세에 '방심 주의'라고 떡하니 써 있었대요. 안 봐서 그래요.",
+  "오늘의 실수는 사실 다음 생의 나를 위한 복선이에요.",
+  "커피가 날 배신한 날이었어요. 저도 당황했어요.",
+  "지구 자기장이 살짝 흔들렸다는 뉴스 봤어요? 그거예요 그거.",
+  "오늘은 그냥... 수요일이었을 뿐이에요.",
+  "머피의 법칙이 오늘 하루만 출근했어요. 내일은 쉴 거예요.",
+  "완벽한 사람이 이상한 거예요. 당신은 지극히 정상이에요.",
+  "중력이 오늘따라 유독 셌어요. 발걸음이 꼬일 수밖에 없었죠.",
+  "오늘의 실수는 이미 예정된 운명이었어요. 내일은 다를 거예요.",
+  "원래 금요일에 올 피로가 오늘 일찍 와버린 거예요.",
+  "루나가 옆에서 한눈판 사이에 생긴 일이에요. 루나 탓으로 할게요.",
+  "오늘따라 시간이 평소보다 빨리 갔어요. 공식적으로 그래요.",
+  "그건 실수가 아니라 '예상치 못한 전개'였을 뿐이에요.",
+  "오늘 하루는 리허설이었다고 생각해요. 진짜는 내일부터예요.",
+];
+
+function drawExcuse() {
+  const el = document.getElementById("excuseResult");
+  if (!el) return;
+  const idx = Math.floor(Math.random() * LUNA_EXCUSES.length);
+  el.textContent = `루나: "${LUNA_EXCUSES[idx]}"`;
+  el.classList.remove("hidden", "pop");
+  void el.offsetWidth;
+  el.classList.add("pop");
+  const btn = document.getElementById("excuseDrawBtn");
+  if (btn) btn.textContent = "다시 뽑기";
+}
+
+document.getElementById("excuseDrawBtn").addEventListener("click", drawExcuse);
+
 const MASCOT_WHISPERS = [
   "오늘도 수고했어요.",
   "실패해도 괜찮아요, 다시 쓰면 되니까.",
