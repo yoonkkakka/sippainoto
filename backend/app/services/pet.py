@@ -64,6 +64,8 @@ def to_pet_state(pet: dict) -> dict:
     if created.tzinfo is None:
         created = created.replace(tzinfo=timezone.utc)
     days_together = max((datetime.now(timezone.utc) - created).days, 0) + 1
+    last_patted = pet.get("last_patted_at")
+    already_patted_today = bool(last_patted) and last_patted[:10] == date.today().isoformat()
 
     return {
         "name": PET_NAME,
@@ -75,6 +77,7 @@ def to_pet_state(pet: dict) -> dict:
         "stage": _stage_from_level(pet["level"]),
         "total_pats": pet.get("total_pats", 0),
         "days_together": days_together,
+        "already_patted_today": already_patted_today,
         "last_interaction_at": pet["last_interaction_at"],
     }
 

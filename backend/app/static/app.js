@@ -589,6 +589,65 @@ const PET_SPEECH_LINES = {
   ],
 };
 
+const PET_STAGES = [
+  { label: "낯가림", minLevel: 1 },
+  { label: "친구", minLevel: 3 },
+  { label: "단짝", minLevel: 6 },
+  { label: "소울메이트", minLevel: 10 },
+];
+const PET_MOOD_BADGE_ICON = {
+  happy: ICON_SPARKLE,
+  sad: ICON_BANDAGE,
+  angry: ICON_BANDAGE,
+};
+
+function renderPetStageTrack(level) {
+  const track = document.getElementById("petStageTrack");
+  if (!track) return;
+  let currentIndex = 0;
+  PET_STAGES.forEach((s, i) => {
+    if (level >= s.minLevel) currentIndex = i;
+  });
+  track.innerHTML = PET_STAGES.map((s, i) => {
+    const state = i < currentIndex ? "done" : i === currentIndex ? "current" : "";
+    const lineState = i <= currentIndex && i > 0 ? "done" : "";
+    const dot = `<div class="stage-dot ${state}"><span class="dot-icon">${ICON_HEART}</span><span>${s.label}</span></div>`;
+    return i === 0 ? dot : `<div class="stage-line ${lineState}"></div>${dot}`;
+  }).join("");
+
+  const hintEl = document.getElementById("petNextStageHint");
+  if (!hintEl) return;
+  const next = PET_STAGES.find((s) => level < s.minLevel);
+  hintEl.textContent = next ? `다음 단계(${next.label})까지 Lv.${next.minLevel - level} 남았어요` : "가장 높은 단계에 닿았어요";
+}
+
+function renderPetMoodBadge(mood) {
+  const badge = document.getElementById("petMoodBadge");
+  if (!badge) return;
+  const icon = PET_MOOD_BADGE_ICON[mood];
+  if (!icon) {
+    badge.classList.add("hidden");
+    badge.innerHTML = "";
+    return;
+  }
+  badge.innerHTML = icon;
+  badge.classList.remove("hidden");
+}
+
+function spawnPatHearts() {
+  const wrap = document.querySelector(".pet-mascot-wrap");
+  if (!wrap) return;
+  for (let i = 0; i < 5; i++) {
+    const heart = document.createElement("div");
+    heart.className = "pat-heart";
+    heart.innerHTML = ICON_HEART;
+    heart.style.left = `${36 + Math.random() * 28}%`;
+    heart.style.animationDelay = `${Math.random() * 0.25}s`;
+    wrap.appendChild(heart);
+    setTimeout(() => heart.remove(), 1400);
+  }
+}
+
 function renderPetState(pet) {
   document.getElementById("petMascotImg").src = PET_MOOD_IMAGES[pet.mood];
   document.getElementById("petStageLabel").textContent = pet.stage;
@@ -601,6 +660,12 @@ function renderPetState(pet) {
   const lines = PET_SPEECH_LINES[pet.mood] || [];
   document.getElementById("petSpeechLabel").textContent = lines[Math.floor(Math.random() * lines.length)] || "";
   document.getElementById("petPatCountLabel").textContent = `지금까지 ${pet.total_pats}번 쓰다듬었어요`;
+  renderPetStageTrack(pet.level);
+  renderPetMoodBadge(pet.mood);
+
+  const patBtn = document.getElementById("petPatBtn");
+  patBtn.disabled = !!pet.already_patted_today;
+  patBtn.textContent = pet.already_patted_today ? "오늘은 다 쓰다듬었어요" : "쓰다듬기";
 }
 
 async function loadPetView() {
@@ -620,6 +685,7 @@ document.getElementById("petPatBtn").addEventListener("click", async () => {
   try {
     const pet = await api("/pet/pat", { method: "POST" });
     renderPetState(pet);
+    spawnPatHearts();
   } catch (e) {
     showError(errorEl, e.message);
   }

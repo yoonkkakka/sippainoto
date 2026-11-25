@@ -95,13 +95,21 @@
         <div class="subtitle" style="margin-bottom:14px;">금이 간 곳을 금으로 메우면, 그 자리가 더 빛나요.</div>
         <div class="pet-mascot-wrap">
           <img src="/static/mascot_neutral.png" alt="루나" class="mascot pet-mascot" id="petMascotImg" />
+          <div id="petMoodBadge" class="pet-mood-badge hidden"></div>
         </div>
         <div id="petStageLabel" class="count-badge" style="display:block;width:fit-content;margin:0 auto 6px;">낯가림쟁이 루나</div>
-        <div id="petLevelLabel" class="subtitle" style="text-align:center;margin-bottom:10px;">Lv.1</div>
-        <div id="petSpeechLabel" class="subtitle" style="text-align:center;margin-bottom:14px;min-height:18px;"></div>
-        <div class="card-subtitle" style="margin-top:4px;">경험치 (<span id="petExpText">0/100</span>)</div>
+        <div id="petLevelLabel" class="subtitle" style="text-align:center;margin-bottom:12px;">Lv.1</div>
+
+        <div id="petStageTrack" class="pet-stage-track"></div>
+        <div id="petNextStageHint" class="subtitle" style="text-align:center;margin-bottom:14px;"></div>
+
+        <div id="petSpeechBubble" class="pet-speech-bubble">
+          <div id="petSpeechLabel"></div>
+        </div>
+
+        <div class="card-subtitle" style="margin-top:4px;"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8Z"/></svg> 경험치 (<span id="petExpText">0/100</span>)</div>
         <div class="progress-bar"><div id="petExpBar" class="progress-fill" style="width:0%;"></div></div>
-        <div class="card-subtitle">애정도 (<span id="petAffectionText">0</span>/100)</div>
+        <div class="card-subtitle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-9.4-8.8C1 8.3 2.6 5 6 5c2 0 3.3 1 4 2.2C10.7 6 12 5 14 5c3.4 0 5 3.3 3.4 6.2C19 15.6 12 20 12 20Z"/></svg> 애정도 (<span id="petAffectionText">0</span>/100)</div>
         <div class="progress-bar"><div id="petAffectionBar" class="progress-fill" style="width:0%;"></div></div>
         <div id="petMoodLabel" class="subtitle" style="text-align:center;margin:10px 0;"></div>
         <button id="petPatBtn">쓰다듬기</button>

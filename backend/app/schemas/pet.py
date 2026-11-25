@@ -16,4 +16,5 @@ class PetState(BaseModel):
     stage: str
     total_pats: int
     days_together: int
+    already_patted_today: bool
     last_interaction_at: datetime
