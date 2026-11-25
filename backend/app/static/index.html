@@ -16,7 +16,7 @@
     <div class="mascot-wrap" style="display:flex;justify-content:center;">
       <img src="/static/mascot.png" alt="루나" class="mascot mascot-splash" id="mascotSplash" />
     </div>
-    <h1>실패작 노트</h1>
+    <h1>실패작 노트<span class="crack-underline"></span></h1>
     <div class="subtitle">오늘의 실패 한 장을 적어보세요.</div>
     <div class="card">
       <label>이메일</label>
@@ -37,7 +37,7 @@
         <img src="/static/mascot.png" alt="루나" class="mascot mascot-avatar" id="mascotAvatar" />
       </div>
       <div>
-        <h1>실패작 노트</h1>
+        <h1>실패작 노트<span class="crack-underline"></span></h1>
         <div class="subtitle">오늘 <span id="todayCount" class="count-badge">0/5</span></div>
       </div>
       <span class="logout-link right" id="logoutBtn">로그아웃</span>
@@ -54,6 +54,7 @@
 
     <section id="view-today" class="view">
       <div class="card comfort-card">
+        <svg class="icon comfort-bandage" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.8" y="9" width="18.4" height="6" rx="3" transform="rotate(-35 12 12)"/><circle cx="9.3" cy="10.6" r="0.55" fill="currentColor" stroke="none" transform="rotate(-35 12 12)"/><circle cx="11.6" cy="12.2" r="0.55" fill="currentColor" stroke="none" transform="rotate(-35 12 12)"/><circle cx="13.9" cy="13.8" r="0.55" fill="currentColor" stroke="none" transform="rotate(-35 12 12)"/></svg>
         <svg class="icon comfort-quote-mark" viewBox="0 0 24 24" fill="currentColor"><path d="M9.5 6.5C6 8 4 11 4 14.5a3.5 3.5 0 0 0 3.5 3.5 3 3 0 0 0 3-3c0-1.4-.9-2.4-2.1-2.8.3-1.8 1.6-3.3 3.4-4.1L9.5 6.5Zm9 0C15 8 13 11 13 14.5a3.5 3.5 0 0 0 3.5 3.5 3 3 0 0 0 3-3c0-1.4-.9-2.4-2.1-2.8.3-1.8 1.6-3.3 3.4-4.1L18.5 6.5Z"/></svg>
         <div id="comfortQuote" class="comfort-quote"></div>
       </div>
@@ -91,6 +92,7 @@
     <section id="view-pet" class="view hidden">
       <div class="card" style="text-align:center;">
         <h2 class="card-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/><path d="M17 3l.6 1.4L19 5l-1.4.6L17 7l-.6-1.4L15 5l1.4-.6Z"/></svg> 루나 키우기</h2>
+        <div class="subtitle" style="margin-bottom:14px;">금이 간 곳을 금으로 메우면, 그 자리가 더 빛나요.</div>
         <div class="pet-mascot-wrap">
           <img src="/static/mascot_neutral.png" alt="루나" class="mascot pet-mascot" id="petMascotImg" />
         </div>
@@ -173,6 +175,7 @@
 
 <div id="crisisModal" class="modal-overlay hidden">
   <div class="box">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:28px;height:28px;color:var(--pink-hot);margin-bottom:8px;"><rect x="2.8" y="9" width="18.4" height="6" rx="3" transform="rotate(-35 12 12)"/><circle cx="9.3" cy="10.6" r="0.55" fill="currentColor" stroke="none" transform="rotate(-35 12 12)"/><circle cx="11.6" cy="12.2" r="0.55" fill="currentColor" stroke="none" transform="rotate(-35 12 12)"/><circle cx="13.9" cy="13.8" r="0.55" fill="currentColor" stroke="none" transform="rotate(-35 12 12)"/></svg>
     <div>혼자 견디기 힘든 마음이 느껴져요.</div>
     <div class="phone">109</div>
     <div>자살예방상담전화에 연결하면 도움을 받을 수 있어요.</div>

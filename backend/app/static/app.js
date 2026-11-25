@@ -233,7 +233,9 @@ function escapeHtml(str) {
 }
 
 const ICON_HEART =
-  '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20s-7-4.4-9.4-8.8C1 8.3 2.6 5 6 5c2 0 3.3 1 4 2.2C10.7 6 12 5 14 5c3.4 0 5 3.3 3.4 6.2C19 15.6 12 20 12 20Z"/></svg>';
+  '<svg class="icon" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.4-8.8C1 8.3 2.6 5 6 5c2 0 3.3 1 4 2.2C10.7 6 12 5 14 5c3.4 0 5 3.3 3.4 6.2C19 15.6 12 20 12 20Z" fill="currentColor"/><path d="M12.3 7.2 11 10l2.1 1.6-1.8 2.4 1.5 2.7" fill="none" stroke="#dba94e" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/></svg>';
+const ICON_BANDAGE =
+  '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.8" y="9" width="18.4" height="6" rx="3" transform="rotate(-35 12 12)"/><circle cx="9.3" cy="10.6" r="0.55" fill="currentColor" stroke="none" transform="rotate(-35 12 12)"/><circle cx="11.6" cy="12.2" r="0.55" fill="currentColor" stroke="none" transform="rotate(-35 12 12)"/><circle cx="13.9" cy="13.8" r="0.55" fill="currentColor" stroke="none" transform="rotate(-35 12 12)"/></svg>';
 const ICON_BUBBLE =
   '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16v10H9l-4 3.5v-3.5H4Z"/></svg>';
 const ICON_BADGE =
@@ -282,20 +284,29 @@ const MILESTONE_MESSAGES = {
   155: "155장, 한 권을 가득 채웠어요. 수고했어요.",
 };
 
+const MILESTONE_ICONS = {
+  1: ICON_SPARKLE,
+  10: ICON_BANDAGE,
+  30: ICON_HEART,
+  50: ICON_BANDAGE,
+  100: ICON_HEART,
+  155: ICON_SPARKLE,
+};
+
 async function checkMilestone() {
   try {
     const stats = await api("/stats/overview");
     const message = MILESTONE_MESSAGES[stats.total_entries];
-    if (message) showMilestoneToast(message);
+    if (message) showMilestoneToast(message, MILESTONE_ICONS[stats.total_entries]);
   } catch (e) {
     console.error(e);
   }
 }
 
-function showMilestoneToast(message) {
+function showMilestoneToast(message, icon) {
   const toast = document.createElement("div");
   toast.className = "milestone-toast";
-  toast.innerHTML = `${ICON_SPARKLE} <span>${escapeHtml(message)}</span>`;
+  toast.innerHTML = `${icon || ICON_SPARKLE} <span>${escapeHtml(message)}</span>`;
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 3200);
 }
@@ -307,6 +318,12 @@ const TONE_LABEL = {
   tone_helplessness: "무기력",
   tone_self_deprecation: "자책",
   tone_anger: "분노",
+};
+const TONE_COLORS = {
+  tone_depression: { bg: "#e4defc", fg: "#5b4aa0" },
+  tone_helplessness: { bg: "#d9ecff", fg: "#3d6fa8" },
+  tone_self_deprecation: { bg: "#ffd9ec", fg: "#b23d72" },
+  tone_anger: { bg: "#ffdada", fg: "#b8443f" },
 };
 
 async function loadNotebooks() {
@@ -408,9 +425,13 @@ async function loadStats() {
     const toneRows = Object.entries(stats.tone_category_totals)
       .map(([category, value]) => {
         const pct = Math.round((value / maxTone) * 100);
+        const color = TONE_COLORS[category] || { bg: "var(--accent-soft)", fg: "var(--accent-dark)" };
         return `
         <div class="stat-row-block">
-          <div class="stat-row"><span>${TONE_LABEL[category] || escapeHtml(category)}</span><strong>${value}</strong></div>
+          <div class="stat-row">
+            <span class="tone-chip" style="background:${color.bg};color:${color.fg};">${TONE_LABEL[category] || escapeHtml(category)}</span>
+            <strong>${value}</strong>
+          </div>
           <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;"></div></div>
         </div>`;
       })
