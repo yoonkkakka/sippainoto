@@ -101,6 +101,7 @@ const viewLoaders = {
   today: () => {
     loadToday();
     loadEntries();
+    renderComfortQuote();
   },
   notebooks: loadNotebooks,
   pet: loadPetView,
@@ -602,6 +603,38 @@ document.getElementById("petPatBtn").addEventListener("click", async () => {
     showError(errorEl, e.message);
   }
 });
+
+const COMFORT_QUOTES = [
+  "잘하지 않아도 괜찮아요. 오늘 하루를 버틴 것만으로 충분해요.",
+  "실패는 당신을 증명하지 않아요. 그저 지나가는 하루일 뿐이에요.",
+  "모든 걸 잘 해내지 않아도, 당신은 여전히 소중한 사람이에요.",
+  "오늘 느낀 감정은 틀리지 않았어요. 그냥 그런 하루였을 뿐이에요.",
+  "지친 마음도 돌볼 가치가 있어요.",
+  "혼자라고 느껴지는 순간에도, 이 노트는 당신 곁에 있어요.",
+  "완벽하지 않아도 계속 써내려가는 당신이 대단해요.",
+  "넘어진 오늘도, 결국 당신의 하루예요.",
+  "잘못한 게 아니라, 그냥 서툴렀던 거예요.",
+  "오늘 하루도 애썼어요. 그걸로 충분해요.",
+  "속도는 중요하지 않아요. 멈추지 않는 것만으로도 잘하고 있어요.",
+  "스스로를 다그치기보다, 오늘은 다정하게 대해줘요.",
+  "힘든 날도 기록이 돼요. 그게 바로 당신이 버텨낸 증거예요.",
+  "실수했다고 해서 당신이 실패작인 건 아니에요.",
+  "오늘의 당신도, 어제의 당신만큼 소중해요.",
+  "지금 이 순간의 감정도 결국 지나가요.",
+  "누구에게도 말 못한 마음, 여기엔 적어도 돼요.",
+  "작은 한 줄이라도, 오늘을 살아낸 기록이에요.",
+  "당신은 생각보다 잘 버티고 있어요.",
+  "오늘 하루, 자신에게 조금 더 너그러워져도 괜찮아요.",
+];
+
+function renderComfortQuote() {
+  const el = document.getElementById("comfortQuote");
+  if (!el) return;
+  const today = new Date().toISOString().slice(0, 10);
+  let hash = 0;
+  for (let i = 0; i < today.length; i++) hash = (hash * 31 + today.charCodeAt(i)) >>> 0;
+  el.textContent = COMFORT_QUOTES[hash % COMFORT_QUOTES.length];
+}
 
 const MASCOT_WHISPERS = [
   "오늘도 수고했어요.",
