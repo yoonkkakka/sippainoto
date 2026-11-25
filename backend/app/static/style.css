@@ -417,11 +417,52 @@ button:disabled { opacity: 0.45; cursor: default; box-shadow: none; }
 
 .stat-hero {
   text-align: center;
-  padding: 10px 0 22px;
+  padding: 10px 0 20px;
 }
-.stat-hero .num {
+.stat-hero::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 3px;
+  margin: 14px auto 0;
+  background: linear-gradient(90deg, transparent, var(--crack-gold), transparent);
+  border-radius: 2px;
+  opacity: 0.85;
+}
+
+.stat-donut-wrap {
+  position: relative;
+  width: 148px;
+  height: 148px;
+  margin: 0 auto 14px;
+}
+.stat-donut { width: 100%; height: 100%; }
+.stat-donut .track { fill: none; stroke: var(--accent-soft); stroke-width: 13; }
+.stat-donut .seg-failure {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 13;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.6s ease;
+}
+.stat-donut .seg-emotion {
+  fill: none;
+  stroke: var(--pink-hot);
+  stroke-width: 13;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.6s ease;
+}
+.stat-donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.stat-donut-center .num {
   font-family: var(--font-display);
-  font-size: 48px;
+  font-size: 36px;
   font-weight: 700;
   line-height: 1;
   background: linear-gradient(135deg, var(--accent), var(--pink));
@@ -429,22 +470,44 @@ button:disabled { opacity: 0.45; cursor: default; box-shadow: none; }
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-.stat-hero .label {
-  font-size: 13px;
+.stat-donut-center .label {
+  font-size: 11.5px;
   color: var(--muted);
-  margin-top: 8px;
+  margin-top: 3px;
   letter-spacing: 0.3px;
 }
-.stat-hero::after {
-  content: "";
-  display: block;
-  width: 64px;
-  height: 3px;
-  margin: 12px auto 0;
-  background: linear-gradient(90deg, transparent, var(--crack-gold), transparent);
-  border-radius: 2px;
-  opacity: 0.85;
+.stat-donut-legend {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
 }
+.stat-donut-legend .dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+.stat-donut-legend .failure .dot { background: var(--accent); }
+.stat-donut-legend .emotion .dot { background: var(--pink-hot); }
+
+.stat-dominant-tone {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bandage);
+  border: 1px solid var(--pink-soft);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #6b4a63;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+.stat-dominant-tone .icon { flex: none; color: var(--pink-hot); }
 
 .comfort-card {
   position: relative;

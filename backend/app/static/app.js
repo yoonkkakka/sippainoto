@@ -400,29 +400,91 @@ async function loadNotebooks() {
 }
 
 async function loadStats() {
-  const body = document.getElementById("statsBody");
+  const heroEl = document.getElementById("statsHero");
+  const notebooksEl = document.getElementById("statsNotebooks");
+  const toneEl = document.getElementById("statsTone");
+
+  let notebooks = [];
+  try {
+    notebooks = await api("/notebooks");
+  } catch (e) {
+    console.error(e);
+  }
+  const typeTotal = (type) => notebooks.filter((n) => n.type === type).reduce((sum, n) => sum + (n.entry_count || 0), 0);
+  const failureTotal = typeTotal("failure");
+  const emotionTotal = typeTotal("emotion");
+  const donutTotal = Math.max(failureTotal + emotionTotal, 0);
+
   try {
     const stats = await api("/stats/overview");
+
+    const circumference = 2 * Math.PI * 50;
+    const failureFrac = donutTotal ? failureTotal / donutTotal : 0;
+    const failureDash = circumference * failureFrac;
+    const emotionDash = circumference - failureDash;
+    heroEl.innerHTML = `
+      <div class="stat-hero">
+        <div class="stat-donut-wrap">
+          <svg class="stat-donut" viewBox="0 0 120 120">
+            <circle class="track" cx="60" cy="60" r="50" />
+            ${
+              donutTotal
+                ? `
+            <circle class="seg-failure" cx="60" cy="60" r="50" stroke-dasharray="${failureDash} ${circumference}" transform="rotate(-90 60 60)" />
+            <circle class="seg-emotion" cx="60" cy="60" r="50" stroke-dasharray="${emotionDash} ${circumference}" stroke-dashoffset="${-failureDash}" transform="rotate(-90 60 60)" />
+            `
+                : ""
+            }
+          </svg>
+          <div class="stat-donut-center">
+            <div class="num">${stats.total_entries}</div>
+            <div class="label">장</div>
+          </div>
+        </div>
+        <div class="stat-donut-legend">
+          <span class="legend-item failure"><span class="dot"></span>실패 ${failureTotal}</span>
+          <span class="legend-item emotion"><span class="dot"></span>감정 ${emotionTotal}</span>
+        </div>
+      </div>
+    `;
+
     const completedRows = Object.entries(stats.completed_notebooks)
-      .map(([type, count]) => `<div class="stat-row"><span>${NOTEBOOK_TYPE_LABEL[type] || type} 완결</span><strong>${count}권</strong></div>`)
+      .map(
+        ([type, count]) =>
+          `<div class="stat-row"><span>${type === "failure" ? ICON_HEART : ICON_BUBBLE} ${NOTEBOOK_TYPE_LABEL[type] || type}</span><strong>${count}권</strong></div>`
+      )
       .join("");
 
     const progressRows = Object.entries(stats.current_progress)
       .map(([type, progress]) => {
         if (!progress) {
-          return `<div class="stat-row"><span>${NOTEBOOK_TYPE_LABEL[type] || type}</span><span style="color:var(--muted);">진행 중인 노트북 없음</span></div>`;
+          return `<div class="stat-row"><span>${type === "failure" ? ICON_HEART : ICON_BUBBLE} ${NOTEBOOK_TYPE_LABEL[type] || type}</span><span style="color:var(--muted);">진행 중인 노트북 없음</span></div>`;
         }
         const pct = Math.min(100, Math.round((progress.entry_count / progress.page_limit) * 100));
         return `
         <div class="stat-row-block">
-          <div class="stat-row"><span>${NOTEBOOK_TYPE_LABEL[type] || type} ${progress.volume_no}권</span><strong>${progress.entry_count}/${progress.page_limit}</strong></div>
+          <div class="stat-row"><span>${type === "failure" ? ICON_HEART : ICON_BUBBLE} ${NOTEBOOK_TYPE_LABEL[type] || type} ${progress.volume_no}권</span><strong>${progress.entry_count}/${progress.page_limit}</strong></div>
           <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;"></div></div>
         </div>`;
       })
       .join("");
 
-    const maxTone = Math.max(1, ...Object.values(stats.tone_category_totals));
-    const toneRows = Object.entries(stats.tone_category_totals)
+    notebooksEl.innerHTML = `
+      <h3 class="card-subtitle">${ICON_BADGE} 완결한 노트북</h3>
+      ${completedRows}
+      <h3 class="card-subtitle" style="margin-top:18px;">${ICON_PENCIL} 진행 중인 노트북</h3>
+      ${progressRows}
+    `;
+
+    const toneEntries = Object.entries(stats.tone_category_totals);
+    const maxTone = Math.max(1, ...toneEntries.map(([, v]) => v));
+    const dominant = toneEntries.filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1])[0];
+    const dominantColor = dominant ? TONE_COLORS[dominant[0]] || { fg: "var(--accent-dark)" } : null;
+    const dominantHtml = dominant
+      ? `<div class="stat-dominant-tone">${ICON_SPARKLE} 최근 글에서 가장 두드러진 감정은 <strong style="color:${dominantColor.fg};">${TONE_LABEL[dominant[0]] || dominant[0]}</strong>이에요.</div>`
+      : "";
+
+    const toneRows = toneEntries
       .map(([category, value]) => {
         const pct = Math.round((value / maxTone) * 100);
         const color = TONE_COLORS[category] || { bg: "var(--accent-soft)", fg: "var(--accent-dark)" };
@@ -437,20 +499,9 @@ async function loadStats() {
       })
       .join("") || '<div style="color:var(--muted);font-size:13px;">아직 분석된 감정 톤이 없어요.</div>';
 
-    body.innerHTML = `
-      <div class="stat-hero">
-        <div class="num">${stats.total_entries}</div>
-        <div class="label">장을 써냈어요</div>
-      </div>
-      <h3 class="card-subtitle">${ICON_BADGE} 완결한 노트북</h3>
-      ${completedRows}
-      <h3 class="card-subtitle">${ICON_PENCIL} 진행 중인 노트북</h3>
-      ${progressRows}
-      <h3 class="card-subtitle">${ICON_WAVE} 감정 톤 분포</h3>
-      ${toneRows}
-    `;
+    toneEl.innerHTML = `${dominantHtml}${toneRows}`;
   } catch (e) {
-    body.innerHTML = `<div class="error">${e.message}</div>`;
+    heroEl.innerHTML = `<div class="error">${e.message}</div>`;
   }
 }
 
